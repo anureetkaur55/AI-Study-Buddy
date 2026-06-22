@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Buddy - Multi-Agent Academic Hub</title>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styleheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h2>StudyBuddy<span>.ai</span></h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#" class="menu-item active" id="nav-dashboard" onclick="switchView('dashboard')">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="menu-item" id="nav-tutor" onclick="switchView('tutor')">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>Tutor Agent</span>
+                </a>
+                <a href="#" class="menu-item" id="nav-quiz" onclick="switchView('quiz')">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>Quiz Agent</span>
+                </a>
+                <a href="#" class="menu-item" id="nav-planner" onclick="switchView('planner')">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Planner Agent</span>
+                </a>
+                <a href="#" class="menu-item" id="nav-progress" onclick="switchView('progress')">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Progress Agent</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="active-doc-indicator">
+                    <p class="indicator-label">Active Document</p>
+                    <p class="indicator-value" id="active-doc-name">No file selected</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- App Header -->
+            <header class="app-header">
+                <div class="header-title">
+                    <h1 id="view-title">Dashboard</h1>
+                    <p id="view-description">Manage study materials and view systems status.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="status-badge">
+                        <span class="pulse-dot"></span>
+                        <span id="api-status">Server Connected</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="content-section active">
+                <div class="dashboard-grid">
+                    <!-- Upload Box -->
+                    <div class="card glass upload-card">
+                        <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload Materials</h3>
+                        <p class="card-subtitle">Upload text files, markdown, or PDFs (max 10MB)</p>
+                        <div class="dropzone" id="dropzone">
+                            <input type="file" id="file-input" accept=".pdf,.txt,.md" style="display:none">
+                            <i class="fa-solid fa-file-pdf dropzone-icon"></i>
+                            <p>Drag and drop your file here, or <span class="browse-btn">browse</span></p>
+                            <span class="file-limits">PDF, TXT, or MD formats</span>
+                        </div>
+                        <div id="upload-progress-container" class="upload-progress-container" style="display:none">
+                            <div class="upload-progress-bar">
+                                <div class="upload-progress-fill" id="upload-progress-fill"></div>
+                            </div>
+                            <span id="upload-filename">Processing file...</span>
+                        </div>
+                    </div>
+
+                    <!-- Library Box -->
+                    <div class="card glass library-card">
+                        <h3><i class="fa-solid fa-book-bookmark"></i> Study Library</h3>
+                        <p class="card-subtitle">Select a document to study with the AI agents</p>
+                        <div class="document-list-container">
+                            <div id="document-list" class="document-list">
+                                <!-- Dynamic Document list will appear here -->
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                    <p>Your library is empty. Upload files to get started!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tutor View -->
+            <section id="view-tutor" class="content-section">
+                <div class="tutor-container glass">
+                    <div class="chat-header">
+                        <div class="chat-agent-info">
+                            <div class="agent-avatar"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div>
+                                <h4>Tutor Agent</h4>
+                                <p class="agent-status">Online • Ready to explain</p>
+                            </div>
+                        </div>
+                        <button class="clear-chat-btn" onclick="clearTutorChat()"><i class="fa-solid fa-trash-can"></i> Clear Chat</button>
+                    </div>
+                    <div class="chat-messages" id="tutor-chat-messages">
+                        <!-- Chat turns go here -->
+                        <div class="message assistant">
+                            <div class="message-bubble">
+                                Hello! Select a document from the library, and ask me any questions. I can break down complex concepts, define terminology, or explain formulas step-by-step!
+                            </div>
+                        </div>
+                    </div>
+                    <form class="chat-input-area" id="tutor-chat-form" onsubmit="sendTutorMessage(event)">
+                        <input type="text" id="tutor-input" placeholder="Ask your Tutor Agent a question..." required autocomplete="off">
+                        <button type="submit" class="send-btn" id="tutor-send-btn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Quiz View -->
+            <section id="view-quiz" class="content-section">
+                <div class="quiz-grid">
+                    <!-- Quiz Controller -->
+                    <div class="card glass quiz-controls">
+                        <h3><i class="fa-solid fa-sliders"></i> Quiz Generator</h3>
+                        <p class="card-subtitle">Create custom assessments from your notes</p>
+                        
+                        <div class="control-group">
+                            <label for="quiz-type-select">Assessment Type</label>
+                            <select id="quiz-type-select" onchange="toggleQuizTypeView()">
+                                <option value="mcq">Multiple Choice (MCQ)</option>
+                                <option value="flashcard">Interactive Flashcards</option>
+                                <option value="short_answer">Short Answer Questions</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="quiz-size">Number of Items</label>
+                            <input type="number" id="quiz-size" min="3" max="15" value="5">
+                        </div>
+
+                        <button class="btn btn-primary btn-block" onclick="generateQuiz()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Quiz</button>
+                    </div>
+
+                    <!-- Quiz Content -->
+                    <div class="card glass quiz-workspace">
+                        <div id="quiz-loading" class="quiz-loading" style="display:none">
+                            <div class="loader"></div>
+                            <p>Quiz Agent is reading notes and drafting questions...</p>
+                        </div>
+                        
+                        <div id="quiz-placeholder" class="quiz-placeholder">
+                            <i class="fa-solid fa-circle-question"></i>
+                            <h3>No Quiz Loaded</h3>
+                            <p>Select a document and hit "Generate Quiz" to test your knowledge.</p>
+                        </div>
+
+                        <div id="quiz-display" class="quiz-display" style="display:none">
+                            <!-- Dynamic quiz cards go here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Planner View -->
+            <section id="view-planner" class="content-section">
+                <div class="planner-grid">
+                    <!-- Planner Controller -->
+                    <div class="card glass planner-controls">
+                        <h3><i class="fa-solid fa-calendar-plus"></i> Schedule Inputs</h3>
+                        <p class="card-subtitle">Outline your goals and time slots</p>
+                        
+                        <div class="control-group">
+                            <label for="exam-date">Exam Date</label>
+                            <input type="date" id="exam-date" required>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="available-hours">Study Hours Per Day</label>
+                            <input type="number" id="available-hours" min="0.5" max="12" step="0.5" value="2.0">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Topics to Cover</label>
+                            <div class="topics-input-container">
+                                <div class="topic-adder">
+                                    <input type="text" id="new-topic-input" placeholder="e.g. Memory Management">
+                                    <button class="add-topic-btn" onclick="addTopicToList()"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <ul id="topics-list-ul" class="topics-list-ul">
+                                    <!-- Dynamic list of topics -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="planner-preferences">Preferences / Constraints</label>
+                            <textarea id="planner-preferences" placeholder="e.g. Free on weekends, focus more on algorithms..."></textarea>
+                        </div>
+
+                        <button class="btn btn-primary btn-block" onclick="generateSchedule()"><i class="fa-solid fa-calendar-days"></i> Generate Study Schedule</button>
+                    </div>
+
+                    <!-- Planner Display -->
+                    <div class="card glass planner-workspace">
+                        <div id="planner-loading" class="quiz-loading" style="display:none">
+                            <div class="loader"></div>
+                            <p>Study Planner Agent is laying out dates and assignments...</p>
+                        </div>
+
+                        <div id="planner-placeholder" class="quiz-placeholder">
+                            <i class="fa-solid fa-calendar"></i>
+                            <h3>No Study Plan Generated</h3>
+                            <p>Enter your exam date and topics, then click "Generate Schedule".</p>
+                        </div>
+
+                        <div id="planner-display" class="planner-display" style="display:none">
+                            <div class="planner-header-box">
+                                <h3>Personalized Study Roadmap</h3>
+                                <p id="planner-stat-summary">Ready to review</p>
+                            </div>
+                            <div class="calendar-timeline" id="calendar-timeline">
+                                <!-- Calendar days populate here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress View -->
+            <section id="view-progress" class="content-section">
+                <div class="progress-grid">
+                    <!-- Progress Checklist -->
+                    <div class="card glass progress-checklist-card">
+                        <h3><i class="fa-solid fa-list-check"></i> Topic Completion Checklist</h3>
+                        <p class="card-subtitle">Mark off topics as you study them to update progress metrics</p>
+                        <div id="progress-topics-list" class="progress-topics-list">
+                            <!-- Dynamic checklist will go here -->
+                            <div class="empty-state">
+                                <i class="fa-solid fa-route"></i>
+                                <p>Syllabus empty. Generate a Study Plan first to import topics automatically.</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-block" style="margin-top: 15px;" onclick="analyzeProgress()"><i class="fa-solid fa-arrows-rotate"></i> Sync & Analyze Progress</button>
+                    </div>
+
+                    <!-- Progress Analytics -->
+                    <div class="card glass progress-analytics-card">
+                        <div id="progress-loading" class="quiz-loading" style="display:none">
+                            <div class="loader"></div>
+                            <p>Progress Agent is assessing quiz scores and completed sections...</p>
+                        </div>
+                        
+                        <div id="progress-placeholder" class="quiz-placeholder">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <h3>No Report Available</h3>
+                            <p>Syllabus checklist is required. Generate a study roadmap to compile your analytics.</p>
+                        </div>
+
+                        <div id="progress-display" class="progress-display" style="display:none">
+                            <div class="completion-metrics">
+                                <div class="progress-ring-container">
+                                    <div class="progress-ring-value" id="progress-percentage-text">0%</div>
+                                </div>
+                                <div>
+                                    <h3>Overall Syllabus Progress</h3>
+                                    <p class="card-subtitle" id="progress-ring-subtitle">Check items on the left to track progress</p>
+                                </div>
+                            </div>
+                            
+                            <hr class="divider">
+
+                            <div class="revision-priorities-box">
+                                <h4><i class="fa-solid fa-circle-exclamation" style="color:var(--accent-warn);"></i> Revision Recommendations</h4>
+                                <div class="revision-suggestions-list" id="revision-suggestions-list">
+                                    <!-- Suggestions generated by agent -->
+                                </div>
+                            </div>
+
+                            <div class="tips-box">
+                                <h4><i class="fa-solid fa-lightbulb" style="color:var(--accent-sec);"></i> Study Guidance & Tips</h4>
+                                <ul id="study-tips-list" class="study-tips-list">
+                                    <!-- Tips generated by agent -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="app.js"></script>
+</body>
+</html>
