@@ -4,6 +4,18 @@ AI Study Buddy is a production-ready web application powered by **FastAPI** on t
 
 ---
 
+## 🌐 Live Demo
+
+**Try AI Study Buddy:**
+https://ai-study-buddy-h1i5.onrender.com/
+
+## 🎥 Demo Video
+
+**Watch Project Demo:**
+https://youtu.be/BUebXKe0h_M?si=7Uz2qLXZ590kRN9R
+
+---
+
 ## 🏗️ System Architecture
 
 The application implements a decoupled, event-driven multi-agent system:
@@ -145,3 +157,39 @@ Open your web browser and navigate to:
 3. **Quiz Agent**: Generate MCQs, test questions, or flip flashcards.
 4. **Planner Agent**: Enter your syllabus topics and exam date to design a calendar schedule.
 5. **Progress Agent**: Mark off completed topics from your planner and fetch analytics and revision suggestions!
+
+---
+
+## 📸 Gallery
+
+<img width="939" height="736" alt="image" src="https://github.com/user-attachments/assets/cbc1304f-313a-46ac-8d46-45a376d4d9b9" />
+
+<img width="1918" height="905" alt="Screenshot 2026-06-22 154840" src="https://github.com/user-attachments/assets/9ead6a81-8331-400b-8d5d-2ba87456ce59" />
+
+---
+
+## 🚀 Future Enhancements
+
+* Voice-Based Tutor Agent
+* Mobile Application
+* Collaborative Study Groups
+* Learning Analytics Dashboard
+* Cloud Database Integration
+* Advanced Revision Recommendations
+
+---
+
+## 👨‍💻 Author
+
+**Anureet Kaur**
+
+LinkedIn: https://www.linkedin.com/in/YOUR-LINKEDIN
+
+---
+
+## ⭐ Support
+
+If you found this project interesting, please consider giving the repository a star ⭐
+
+It helps others discover the project and supports future development.
+
